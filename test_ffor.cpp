@@ -29,7 +29,7 @@ public:
 		// Init
 		// alp::encoder<PT>::init(input_arr, rowgroup_offset, tuples_count, sample_arr, stt);
     // alp::encoder<PT>::analyze_ffor(input_arr, bit_width, base_arr);
-		int64_t min = INT64_MAX;
+		int32_t min = INT32_MAX;
 		for (size_t i = 0; i < alp::config::VECTOR_SIZE; ++i) {
 			if (input_arr[i] < min)
 				min = input_arr[i];
@@ -38,15 +38,15 @@ public:
 		for (size_t i = 0; i < alp::config::VECTOR_SIZE; ++i) {
 			size_t cur_bw = 1;
 			if (input_arr[i] - min > 0)
-				cur_bw = 64 - __builtin_clzll(input_arr[i] - min);
+				cur_bw = 32 - __builtin_clz(input_arr[i] - min);
 			//printf("cur_bw: %lu\n", cur_bw);
 			if (cur_bw > bit_width)
 				bit_width = cur_bw;
 		}
-		if (bit_width > 64)
-			bit_width = 64;
+		if (bit_width > 32)
+			bit_width = 32;
 		if (bit_width == 0)
-			bit_width = 64;
+			bit_width = 32;
 		// printf("Bit width: %lu\n", bit_width);
 		*base_arr = min;
 		ffor::ffor(input_arr, encoded_arr, bit_width, base_arr);
@@ -70,12 +70,12 @@ int main(int argc, char *argv[]) {
 		tuples_count++;
 	rewind(fp);
 
-	int64_t *input_arr = new int64_t[tuples_count];
-	int64_t *base_arr = new int64_t[tuples_count];
+	int32_t *input_arr = new int32_t[tuples_count];
+	int32_t *base_arr = new int32_t[tuples_count];
 	size_t *bit_widths = new size_t[tuples_count];
-	int64_t *encoded_arr = new int64_t[tuples_count];
-	int64_t *decoded_arr = new int64_t[tuples_count];
-	int64_t value_to_encode;
+	int32_t *encoded_arr = new int32_t[tuples_count];
+	int32_t *decoded_arr = new int32_t[tuples_count];
+	int32_t value_to_encode;
 	char *end_ptr;
 	// keep storing values from the text file so long as data exists:
 	size_t row_idx {0};
@@ -101,6 +101,7 @@ int main(int argc, char *argv[]) {
 				input_arr[i] <<= 1;
 				input_arr[i]++;
 			}
+			// input_arr[i] = (input_arr[i] << 1) | (input_arr[i] >> 31);
 			//printf("%" PRId64 "\n", input_arr[i]);
 		}
 	}
@@ -112,7 +113,7 @@ int main(int argc, char *argv[]) {
   clock_gettime(CLOCK_REALTIME, &t);
 
 	for (size_t i = 0; i < block_count; i++) {
-	  bit_widths[i] = ft.encode_block<int64_t>(input_arr + i * 1024, encoded_arr + i * 1024, base_arr + i * 1024);
+	  bit_widths[i] = ft.encode_block<int32_t>(input_arr + i * 1024, encoded_arr + i * 1024, base_arr + i * 1024);
 	}
   printf("\nNumbers per sec: %lf\n", tuples_count / time_taken_in_secs(t) / 1000);
   t = print_time_taken(t, "Time taken for encode: ");

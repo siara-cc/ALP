@@ -1,1 +1,1 @@
- g++ -std=c++17 -I./include -o test_ffor test_ffor.cpp src/fastlanes_ffor.cpp src/fastlanes_generated_ffor.cpp src/fastlanes_generated_unffor.cpp src/fastlanes_unffor.cpp src/falp.cpp -march=native -mpopcnt -msse3 -mavx2 -msse2 -mbmi2 -mavx -g -O3
+ g++ -std=c++17 -I./include -o test_ffor test_ffor.cpp src/fastlanes_ffor.cpp src/fastlanes_generated_ffor.cpp src/fastlanes_generated_unffor.cpp src/fastlanes_unffor.cpp src/falp.cpp -march=native -mpopcnt -msse3 -mavx2 -msse2 -mbmi2 -mavx -O3 -msse
