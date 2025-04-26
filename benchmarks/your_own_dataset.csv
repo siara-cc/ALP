@@ -1,1 +1,3 @@
 id,column_name,data_type,path,file_type
+1,lat,double,/Users/arun/git2/sqlite_dbs/lat.txt,csv
+2,lng,double,/Users/arun/git2/sqlite_dbs/lng.txt,csv

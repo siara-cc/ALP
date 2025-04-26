@@ -5,7 +5,8 @@
 #include <iostream>
 #include <inttypes.h>
 
-#include "include/alp.hpp"
+#include "fastlanes/ffor.hpp"
+#include "fastlanes/unffor.hpp"
 
 double time_taken_in_secs(struct timespec t) {
   struct timespec t_end;
@@ -20,6 +21,8 @@ struct timespec print_time_taken(struct timespec t, const char *msg) {
   return t;
 }
 
+#define VECTOR_SIZE 1024
+
 class ffor_test {
 public:
 
@@ -30,12 +33,12 @@ public:
 		// alp::encoder<PT>::init(input_arr, rowgroup_offset, tuples_count, sample_arr, stt);
     // alp::encoder<PT>::analyze_ffor(input_arr, bit_width, base_arr);
 		int64_t min = INT64_MAX;
-		for (size_t i = 0; i < alp::config::VECTOR_SIZE; ++i) {
+		for (size_t i = 0; i < VECTOR_SIZE; ++i) {
 			if (input_arr[i] < min)
 				min = input_arr[i];
 		}
 		size_t bit_width = 0;
-		for (size_t i = 0; i < alp::config::VECTOR_SIZE; ++i) {
+		for (size_t i = 0; i < VECTOR_SIZE; ++i) {
 			size_t cur_bw = 1;
 			if (input_arr[i] - min > 0)
 				cur_bw = 64 - __builtin_clzll(input_arr[i] - min);
